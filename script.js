@@ -1,10 +1,10 @@
 const video = document.getElementById('video')
 
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-  faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-  faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-  faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+  faceapi.nets.tinyFaceDetector.loadFromUri('live-face-recognition/models'),
+  faceapi.nets.faceLandmark68Net.loadFromUri('live-face-recognition/models'),
+  faceapi.nets.faceRecognitionNet.loadFromUri('live-face-recognition/models'),
+  faceapi.nets.ssdMobilenetv1.loadFromUri('live-face-recognition/models')
   // faceapi.nets.faceExpressionNet.loadFromUri('/models')
 ]).then(startVideo)
 
@@ -29,7 +29,7 @@ video.addEventListener('play', () => {
     const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors()
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-    
+
     const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
     results.forEach((result, i) => {
       const box = resizedDetections[i].detection.box
@@ -48,7 +48,7 @@ function loadLabeledImages() {
     labels.map(async label => {
       const descriptions = []
       for (let i = 1; i <= 2; i++) {
-        const img = await faceapi.fetchImage(`./labeled_images/${label}/${i}.jpg`)
+        const img = await faceapi.fetchImage(`./live-face-recognition/labeled_images/${label}/${i}.jpg`)
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
         descriptions.push(detections.descriptor)
       }
